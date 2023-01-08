@@ -8,9 +8,16 @@ use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
+    public $BASE_URL;
+    
+    public function __construct() {
+        $url = json_decode(file_get_contents(base_path('data.json')), true);
+        $this->BASE_URL = $url['CartUrl'];
+    }
+
     public function index()
     {
-        $url = 'localhost:8002/api/cart';
+        $url = $this->BASE_URL.'/api/cart';
         $res = Http::get($url);
         $dataRes = json_decode($res->body());
         if($dataRes->statusCode != true){
@@ -41,7 +48,7 @@ class CartController extends Controller
             return redirect('/product')->with($session);
         } else {
 
-            $url = 'localhost:8002/api/cart';
+            $url = $this->BASE_URL.'/api/cart';
             $res = Http::post($url, [
                 'ProductId' => $req->ProductId
             ]);
@@ -65,7 +72,7 @@ class CartController extends Controller
 
     public function destroy($id)
     {
-        $url = 'localhost:8002/api/cart/'.$id;
+        $url = $this->BASE_URL.'/api/cart/'.$id;
         $res = Http::post($url, [
             '_method' => 'DELETE'
         ]);
@@ -87,7 +94,7 @@ class CartController extends Controller
 
     public function checkout()
     {
-        $url = 'localhost:8002/api/cart/checkout';
+        $url = $this->BASE_URL.'/api/cart/checkout';
         $res = Http::get($url);
         $dataRes = json_decode($res->body());
         if($dataRes->statusCode != true){

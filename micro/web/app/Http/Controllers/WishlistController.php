@@ -8,9 +8,16 @@ use Illuminate\Support\Facades\Validator;
 
 class WishlistController extends Controller
 {
+    public $BASE_URL;
+    
+    public function __construct() {
+        $url = json_decode(file_get_contents(base_path('data.json')), true);
+        $this->BASE_URL = $url['WishlistUrl'];
+    }
+
     public function index()
     {
-        $url = 'localhost:8003/api/wishlist';
+        $url = $this->BASE_URL.'/api/wishlist';
         $res = Http::get($url);
         $dataRes = json_decode($res->body());
         if($dataRes->statusCode != true){
@@ -40,7 +47,7 @@ class WishlistController extends Controller
             ];
             return redirect('/product')->with($session);
         } else {
-            $url = 'localhost:8003/api/wishlist';
+            $url = $this->BASE_URL.'/api/wishlist';
             $res = Http::post($url, [
                 'ProductId' => $req->ProductId
             ]);
@@ -63,7 +70,7 @@ class WishlistController extends Controller
 
     public function destroy($id)
     {
-        $url = 'localhost:8003/api/wishlist/'.$id;
+        $url = $this->BASE_URL.'/api/wishlist/'.$id;
         $res = Http::post($url, [
             '_method' => 'DELETE'
         ]);
@@ -85,7 +92,7 @@ class WishlistController extends Controller
 
     public function clearWishlist()
     {
-        $url = 'localhost:8003/api/wishlist/reset';
+        $url = $this->BASE_URL.'/api/wishlist/reset';
         $res = Http::get($url);
         $dataRes = json_decode($res->body());
         if($dataRes->statusCode != true){

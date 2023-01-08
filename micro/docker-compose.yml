@@ -1,0 +1,36 @@
+version: '3'
+services:
+  micro.product:
+    image: iboydev/micro-product:v1
+    container_name: micro-product
+    hostname: micro.product
+    ports:
+      - '8001:80'
+  micro.cart:
+    image: iboydev/micro-cart:v1
+    container_name: micro-cart
+    hostname: micro.cart
+    ports:
+      - '8002:80'
+  micro.wishlist:
+    image: iboydev/micro-wishlist:v1
+    container_name: micro-wishlist
+    hostname: micro.wishlist
+    ports:
+      - '8003:80'
+  webserver:
+    image: iboydev/microweb:v1
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - micro.product
+      - micro.cart
+      - micro.wishlist
+    depends_on:
+      - micro.product
+      - micro.cart
+      - micro.wishlist

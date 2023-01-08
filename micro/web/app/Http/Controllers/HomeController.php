@@ -6,9 +6,16 @@ use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
+    public $BASE_URL;
+    
+    public function __construct() {
+        $url = json_decode(file_get_contents(base_path('data.json')), true);
+        $this->BASE_URL = $url['ProductUrl'];
+    }
+
     public function index()
     {
-        $url = 'localhost:8001/api/product/latest';
+        $url = $this->BASE_URL.'/api/product/latest';
         $res = Http::get($url);
         $dataRes = json_decode($res->body());
         if($dataRes->statusCode != true){
@@ -33,7 +40,7 @@ class HomeController extends Controller
 
     public function shop()
     {
-        $url = 'localhost:8001/api/product';
+        $url = $this->BASE_URL.'/api/product';
         $res = Http::get($url);
         $dataRes = json_decode($res->body());
         if($dataRes->statusCode != true){
